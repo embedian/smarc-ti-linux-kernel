@@ -337,6 +337,11 @@ config MACH_AM335XEVM
 	depends on SOC_OMAPAM33XX
 	default y
 
+config MACH_SMARCT335XEVM
+        bool "SMARCT335X Evaluation Module"
+        depends on SOC_OMAPAM33XX
+        default y
+
 config MACH_AM335XIAEVM
 	bool "AM335X IA Evaluation Module"
 	depends on SOC_OMAPAM33XX

@@ -213,8 +213,10 @@ static struct omap2_hsmmc_info am335x_mmc[] __initdata = {
 	{
 		.mmc            = 1,
 		.caps           = MMC_CAP_4_BIT_DATA,
-		.gpio_cd        = GPIO_TO_PIN(0, 6),
-		.gpio_wp        = GPIO_TO_PIN(3, 18),
+/*		.gpio_cd        = GPIO_TO_PIN(0, 6),
+		.gpio_wp        = GPIO_TO_PIN(3, 18),*/
+                .gpio_cd        = -EINVAL,
+                .gpio_wp        = -EINVAL,
 		.ocr_mask       = MMC_VDD_32_33 | MMC_VDD_33_34, /* 3V3 */
 	},
 	{
@@ -504,6 +506,8 @@ static struct pinmux_config spi1_pin_mux[] = {
 		| AM33XX_INPUT_EN},
 	{"mcasp0_ahclkr.spi1_cs0", OMAP_MUX_MODE3 | AM33XX_PULL_ENBL
 		| AM33XX_PULL_UP | AM33XX_INPUT_EN},
+        {"xdma_event_intr0.spi1_cs1", OMAP_MUX_MODE4 | AM33XX_PULL_ENBL
+                | AM33XX_PULL_UP | AM33XX_INPUT_EN},
 	{NULL, 0},
 };
 
@@ -580,11 +584,26 @@ static struct pinmux_config rmii1_pin_mux[] = {
 	{NULL, 0},
 };
 
+/* Module pin mux for rmii2 */
+static struct pinmux_config rmii2_pin_mux[] = {
+        {"gpmc_wait0.rmii2_crs_dv", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
+        {"gpmc_wpn.rmii2_rxerr", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
+        {"gpmc_a0.rmii2_txen", OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT},
+        {"gpmc_a4.rmii2_txd1", OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT},
+        {"gpmc_a5.rmii2_txd0", OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT},
+        {"gpmc_a10.rmii2_rxd1", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
+        {"gpmc_a11.rmii2_rxd0", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
+        {"mii1_col.rmii2_refclk", OMAP_MUX_MODE1 | AM33XX_PIN_INPUT_PULLDOWN},
+/*        {"mdio_data.mdio_data", OMAP_MUX_MODE0 | AM33XX_PIN_INPUT_PULLUP},
+        {"mdio_clk.mdio_clk", OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT_PULLUP},*/
+        {NULL, 0},
+};
+
 static struct pinmux_config i2c1_pin_mux[] = {
-	{"spi0_d1.i2c1_sda",    OMAP_MUX_MODE2 | AM33XX_SLEWCTRL_SLOW |
-					AM33XX_PULL_ENBL | AM33XX_INPUT_EN},
-	{"spi0_cs0.i2c1_scl",   OMAP_MUX_MODE2 | AM33XX_SLEWCTRL_SLOW |
-					AM33XX_PULL_ENBL | AM33XX_INPUT_EN},
+        {"uart1_rxd.i2c1_sda",    OMAP_MUX_MODE3 | AM33XX_SLEWCTRL_SLOW |
+                                        AM33XX_PULL_ENBL | AM33XX_INPUT_EN},
+        {"uart1_txd.i2c1_scl",   OMAP_MUX_MODE3 | AM33XX_SLEWCTRL_SLOW |
+                                        AM33XX_PULL_ENBL | AM33XX_INPUT_EN},
 	{NULL, 0},
 };
 
@@ -598,15 +617,14 @@ static struct pinmux_config i2c2_pin_mux[] = {
 
 /* Module pin mux for mcasp1 */
 static struct pinmux_config mcasp1_pin_mux[] = {
-	{"mii1_crs.mcasp1_aclkx", OMAP_MUX_MODE4 | AM33XX_PIN_INPUT_PULLDOWN},
-	{"mii1_rxerr.mcasp1_fsx", OMAP_MUX_MODE4 | AM33XX_PIN_INPUT_PULLDOWN},
-	{"mii1_col.mcasp1_axr2", OMAP_MUX_MODE4 | AM33XX_PIN_INPUT_PULLDOWN},
-	{"rmii1_refclk.mcasp1_axr3", OMAP_MUX_MODE4 |
-						AM33XX_PIN_INPUT_PULLDOWN},
+        {"mcasp0_aclkr.mcasp1_aclkx", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
+        {"mcasp0_fsr.mcasp1_fsx", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
+        {"mcasp0_axr1.mcasp1_axr0", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
+        {"mcasp0_ahclkx.mcasp1_axr1", OMAP_MUX_MODE3 | AM33XX_PIN_INPUT_PULLDOWN},
 	{NULL, 0},
 };
 
-
+#define SMARC_SDIO_PWREN  GPIO_TO_PIN(1, 19)
 /* Module pin mux for mmc0 */
 static struct pinmux_config mmc0_common_pin_mux[] = {
 	{"mmc0_dat3.mmc0_dat3",	OMAP_MUX_MODE0 | AM33XX_PIN_INPUT_PULLUP},
@@ -619,12 +637,12 @@ static struct pinmux_config mmc0_common_pin_mux[] = {
 };
 
 static struct pinmux_config mmc0_wp_only_pin_mux[] = {
-	{"mcasp0_aclkr.gpio3_18", OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLUP},
+        {"gpmc_a1.gpio1_17", OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLUP},
 	{NULL, 0},
 };
 
 static struct pinmux_config mmc0_cd_only_pin_mux[] = {
-	{"spi0_cs1.gpio0_6",  OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLUP},
+        {"gpmc_a2.gpio1_18",  OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLDOWN},
 	{NULL, 0},
 };
 
@@ -648,19 +666,19 @@ static struct pinmux_config mmc1_dat4_7_pin_mux[] = {
 };
 
 static struct pinmux_config mmc1_wp_only_pin_mux[] = {
-	{"gpmc_csn0.gpio1_29",	OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLUP},
+/*	{"gpmc_csn0.gpio1_29",	OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLUP},*/
 	{NULL, 0},
 };
 
 static struct pinmux_config mmc1_cd_only_pin_mux[] = {
-	{"gpmc_advn_ale.gpio2_2", OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLUP},
+/*	{"gpmc_advn_ale.gpio2_2", OMAP_MUX_MODE7 | AM33XX_PIN_INPUT_PULLUP},*/
 	{NULL, 0},
 };
 
 /* Module pin mux for uart3 */
 static struct pinmux_config uart3_pin_mux[] = {
-	{"spi0_cs1.uart3_rxd", AM33XX_PIN_INPUT_PULLUP},
-	{"ecap0_in_pwm0_out.uart3_txd", AM33XX_PULL_ENBL},
+        {"mii1_rxd3.uart3_rxd", OMAP_MUX_MODE1 | AM33XX_PIN_INPUT_PULLUP},
+        {"mii1_rxd2.uart3_txd", OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT},
 	{NULL, 0},
 };
 
@@ -676,14 +694,26 @@ static struct pinmux_config d_can_ia_pin_mux[] = {
 	{NULL, 0},
 };
 
+static struct pinmux_config d_can0_pin_mux[] = {
+        {"mii1_txd3.d_can0_tx", OMAP_MUX_MODE1 | AM33XX_PULL_ENBL},
+        {"mii1_txd2.d_can0_rx", OMAP_MUX_MODE1 | AM33XX_PIN_INPUT_PULLUP},
+        {NULL, 0},
+};
+
 /* Module pin mux for uart2 */
 static struct pinmux_config uart2_pin_mux[] = {
-	{"spi0_sclk.uart2_rxd", OMAP_MUX_MODE1 | AM33XX_SLEWCTRL_SLOW |
-						AM33XX_PIN_INPUT_PULLUP},
-	{"spi0_d0.uart2_txd", OMAP_MUX_MODE1 | AM33XX_PULL_UP |
-						AM33XX_PULL_DISA |
-						AM33XX_SLEWCTRL_SLOW},
+        {"mii1_rxclk.uart2_txd", OMAP_MUX_MODE1 | AM33XX_PIN_OUTPUT},
+        {"mii1_txclk.uart2_rxd", OMAP_MUX_MODE1 | AM33XX_PIN_INPUT_PULLUP},
 	{NULL, 0},
+};
+
+/* Module pin mux for uart0 */
+static struct pinmux_config uart0_pin_mux[] = {
+        {"uart0_txd.uart0_txd", OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},
+        {"uart0_rxd.uart0_rxd", OMAP_MUX_MODE0 | AM33XX_PIN_INPUT_PULLUP},
+        {"uart0_ctsn.uart0_ctsn", OMAP_MUX_MODE0 | AM33XX_PIN_INPUT_PULLUP},
+        {"uart0_rtsn.uart0_rtsn", OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},
+        {NULL, 0},
 };
 
 /* pinmux for gpio based key */
@@ -707,6 +737,27 @@ static struct pinmux_config gpio_led_mux[] = {
 static struct pinmux_config gpio_ddr_vtt_enb_pin_mux[] = {
 	{"ecap0_in_pwm0_out.gpio0_7", OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT},
 	{NULL, 0},
+};
+
+/* Module pin mux for GPIO */
+static struct pinmux_config gpio_pin_mux[] = {
+        {"mii1_rxdv.gpio3_4",            OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
+                                                       | AM33XX_PULL_DISA},
+        {"gpmc_a9.gpio1_25",             OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
+                                                       | AM33XX_PULL_DISA},
+        {"gpmc_a8.gpio1_24",             OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
+                                                       | AM33XX_PULL_DISA},
+        {"gpmc_wen.gpio2_4",             OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
+                                                       | AM33XX_PULL_DISA},
+        {"gpmc_oen_ren.gpio2_3",         OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
+                                                       | AM33XX_PULL_DISA},
+        {"gpmc_ben1.gpio1_28",           OMAP_MUX_MODE7 | AM33XX_PIN_INPUT},
+        {"gpmc_csn0.gpio1_29",           OMAP_MUX_MODE7 | AM33XX_PIN_INPUT},
+        {"gpmc_csn3.gpio2_0",            OMAP_MUX_MODE7 | AM33XX_PIN_INPUT},
+        {"gpmc_clk.gpio2_1",             OMAP_MUX_MODE7 | AM33XX_PIN_INPUT},
+        {"emu0.gpio3_7",                 OMAP_MUX_MODE7 | AM33XX_PIN_INPUT},
+        {"emu1.gpio3_8",                 OMAP_MUX_MODE7 | AM33XX_PIN_INPUT},
+        {NULL, 0},
 };
 
 /*
@@ -885,13 +936,15 @@ static void _configure_device(int evm_id, struct evm_dev_cfg *dev_cfg,
 
 /* pinmux for usb0 drvvbus */
 static struct pinmux_config usb0_pin_mux[] = {
-	{"usb0_drvvbus.usb0_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},
+/*	{"usb0_drvvbus.usb0_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},*/
+        {"usb0_drvvbus.gpio0_18",    OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT_PULLUP},
 	{NULL, 0},
 };
 
 /* pinmux for usb1 drvvbus */
 static struct pinmux_config usb1_pin_mux[] = {
-	{"usb1_drvvbus.usb1_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},
+/*	{"usb1_drvvbus.usb1_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},*/
+        {"usb1_drvvbus.gpio3_13",    OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT_PULLUP},
 	{NULL, 0},
 };
 
@@ -1111,6 +1164,12 @@ static void rmii1_init(int evm_id, int profile)
 	return;
 }
 
+static void rmii2_init(int evm_id, int profile)
+{
+        setup_pin_mux(rmii2_pin_mux);
+        return;
+}
+
 static void usb0_init(int evm_id, int profile)
 {
 	setup_pin_mux(usb0_pin_mux);
@@ -1137,6 +1196,13 @@ static void uart2_init(int evm_id, int profile)
 	return;
 }
 
+/* setup uart0 */
+static void uart0_init(int evm_id, int profile)
+{
+        setup_pin_mux(uart0_pin_mux);
+        return;
+}
+
 /*
  * gpio0_7 was driven HIGH in u-boot before DDR configuration
  *
@@ -1146,6 +1212,18 @@ static void gpio_ddr_vtt_enb_init(int evm_id, int profile)
 {
 	setup_pin_mux(gpio_ddr_vtt_enb_pin_mux);
 	return;
+}
+
+#define SMARC_BKLT_EN  GPIO_TO_PIN(2, 5)
+/*
+ * setup SMARC GPIO
+ */
+static void gpio_init(int evm_id, int profile)
+{
+        setup_pin_mux(gpio_pin_mux);
+        gpio_request(SMARC_BKLT_EN, "BKLT_EN");
+        gpio_direction_output(SMARC_BKLT_EN, 1);
+        return;
 }
 
 /* setup haptics */
@@ -1204,7 +1282,7 @@ static struct mtd_partition am335x_nand_partitions[] = {
 
 /* SPI 0/1 Platform Data */
 /* SPI flash information */
-static struct mtd_partition am335x_spi_partitions[] = {
+static struct mtd_partition smarct335x_spi_partitions[] = {
 	/* All the partition sizes are listed in terms of erase size */
 	{
 		.name       = "SPL",
@@ -1233,11 +1311,11 @@ static struct mtd_partition am335x_spi_partitions[] = {
 	}
 };
 
-static const struct flash_platform_data am335x_spi_flash = {
-	.type      = "w25q64",
+static const struct flash_platform_data smarct335x_spi_flash = {
+	.type      = "mx25l3206d",
 	.name      = "spi_flash",
-	.parts     = am335x_spi_partitions,
-	.nr_parts  = ARRAY_SIZE(am335x_spi_partitions),
+	.parts     = smarct335x_spi_partitions,
+	.nr_parts  = ARRAY_SIZE(smarct335x_spi_partitions),
 };
 
 /*
@@ -1247,7 +1325,7 @@ static const struct flash_platform_data am335x_spi_flash = {
 static struct spi_board_info am335x_spi0_slave_info[] = {
 	{
 		.modalias      = "m25p80",
-		.platform_data = &am335x_spi_flash,
+		.platform_data = &smarct335x_spi_flash,
 		.irq           = -1,
 		.max_speed_hz  = 24000000,
 		.bus_num       = 1,
@@ -1257,12 +1335,12 @@ static struct spi_board_info am335x_spi0_slave_info[] = {
 
 static struct spi_board_info am335x_spi1_slave_info[] = {
 	{
-		.modalias      = "m25p80",
-		.platform_data = &am335x_spi_flash,
+		.modalias      = "spidev",
 		.irq           = -1,
 		.max_speed_hz  = 12000000,
 		.bus_num       = 2,
 		.chip_select   = 0,
+                .mode = SPI_MODE_1  //appropriate for us, yours may be different
 	},
 };
 
@@ -1511,7 +1589,7 @@ static struct regulator_init_data tps65217_regulator_data[] = {
 	},
 };
 
-static struct tps65217_board beaglebone_tps65217_info = {
+static struct tps65217_board smarct335x_tps65217_info = {
 	.tps65217_init_data = &tps65217_regulator_data[0],
 	.status_off = true,
 };
@@ -1578,7 +1656,7 @@ static void lis331dlh_init(int evm_id, int profile)
 }
 
 static struct i2c_board_info am335x_i2c1_boardinfo[] = {
-	{
+/*	{
 		I2C_BOARD_INFO("tlv320aic3x", 0x1b),
 	},
 	{
@@ -1586,7 +1664,7 @@ static struct i2c_board_info am335x_i2c1_boardinfo[] = {
 	},
 	{
 		I2C_BOARD_INFO("tmp275", 0x48),
-	},
+	},*/
 };
 
 static void i2c1_init(int evm_id, int profile)
@@ -1633,8 +1711,10 @@ static void mmc1_init(int evm_id, int profile)
 
 	am335x_mmc[1].mmc = 2;
 	am335x_mmc[1].caps = MMC_CAP_4_BIT_DATA;
-	am335x_mmc[1].gpio_cd = GPIO_TO_PIN(2, 2);
-	am335x_mmc[1].gpio_wp = GPIO_TO_PIN(1, 29);
+/*	am335x_mmc[1].gpio_cd = GPIO_TO_PIN(2, 2);
+	am335x_mmc[1].gpio_wp = GPIO_TO_PIN(1, 29);*/
+        am335x_mmc[1].gpio_cd = -EINVAL;
+        am335x_mmc[1].gpio_wp = -EINVAL;
 	am335x_mmc[1].ocr_mask = MMC_VDD_32_33 | MMC_VDD_33_34; /* 3V3 */
 
 	/* mmc will be initialized when mmc0_init is called */
@@ -1799,6 +1879,11 @@ static void d_can_init(int evm_id, int profile)
 			am33xx_d_can_init(1);
 		}
 		break;
+        case SMARC_T335X:
+                        setup_pin_mux(d_can0_pin_mux);
+                        /* Instance One */
+                        am33xx_d_can_init(0);
+                break;
 	default:
 		break;
 	}
@@ -1813,6 +1898,12 @@ static void mmc0_init(int evm_id, int profile)
 		setup_pin_mux(mmc0_common_pin_mux);
 		setup_pin_mux(mmc0_cd_only_pin_mux);
 		break;
+        case SMARC_T335X:
+                gpio_request(SMARC_SDIO_PWREN, "SDIO_PWREN");
+                gpio_direction_output(SMARC_SDIO_PWREN, 1);
+                setup_pin_mux(mmc0_common_pin_mux);
+                setup_pin_mux(mmc0_cd_only_pin_mux);
+                setup_pin_mux(mmc0_wp_only_pin_mux);
 	default:
 		setup_pin_mux(mmc0_common_pin_mux);
 		setup_pin_mux(mmc0_cd_only_pin_mux);
@@ -1827,7 +1918,7 @@ static void mmc0_init(int evm_id, int profile)
 static struct i2c_board_info tps65217_i2c_boardinfo[] = {
 	{
 		I2C_BOARD_INFO("tps65217", TPS65217_I2C_ID),
-		.platform_data  = &beaglebone_tps65217_info,
+		.platform_data  = &smarct335x_tps65217_info,
 	},
 };
 
@@ -2092,7 +2183,7 @@ static struct pinmux_config clkout2_pin_mux[] = {
 
 static void clkout2_enable(int evm_id, int profile)
 {
-	struct clk *ck_32;
+/*	struct clk *ck_32;
 
 	ck_32 = clk_get(NULL, "clkout2_ck");
 	if (IS_ERR(ck_32)) {
@@ -2100,7 +2191,15 @@ static void clkout2_enable(int evm_id, int profile)
 		return;
 	}
 
-	clk_enable(ck_32);
+
+	clk_enable(ck_32);*/
+        void __iomem *base;
+        unsigned int val;
+
+        base = ioremap(0x44E00700, SZ_4K);
+        val = (5 << 3) | (3 << 0); //32 MHz
+        writel(val, base);
+        iounmap(base);
 
 	setup_pin_mux(clkout2_pin_mux);
 }
@@ -2205,6 +2304,33 @@ static struct evm_dev_cfg beagleboneblack_dev_cfg[] = {
 	{i2c2_init,	DEV_ON_BASEBOARD, PROFILE_NONE},
 	{sgx_init,	DEV_ON_BASEBOARD, PROFILE_NONE},
 	{NULL, 0, 0},
+};
+
+/* SMARC T335X */
+static struct evm_dev_cfg smarc_t335x_dev_cfg[] = {
+/*        {am335x_rtc_init, DEV_ON_BASEBOARD, PROFILE_NONE},*/
+        {clkout2_enable, DEV_ON_BASEBOARD, PROFILE_NONE},
+        {tps65217_init, DEV_ON_BASEBOARD, PROFILE_NONE},
+        {rmii1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {rmii2_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {usb0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {usb1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+/*        {lcdc_init,     DEV_ON_BASEBOARD, PROFILE_NONE},*/
+        {mcasp1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {mmc1_emmc_init,        DEV_ON_BASEBOARD, PROFILE_NONE},
+        {mmc0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {uart3_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {uart2_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {uart0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {d_can_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {i2c1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {i2c2_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {spi0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {spi1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {gpio_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+        {mfd_tscadc_init,       DEV_ON_BASEBOARD, PROFILE_NONE},
+        {sgx_init,      DEV_ON_BASEBOARD, PROFILE_NONE},
+        {NULL, 0, 0},
 };
 
 /* EVM - Starter Kit */
@@ -2423,6 +2549,23 @@ static void setup_beagleboneblack(void)
 	am33xx_cpsw_init(AM33XX_CPSW_MODE_MII, NULL, NULL);
 }
 
+/* SMARC T335X*/
+static void setup_smarc_t335x(void)
+{
+        pr_info("The board is an Embedian SMARC T335X module.\n");
+
+        /* Setup SMARCT335X EVM SD card CD and WP pin */
+        am335x_mmc[0].gpio_wp = GPIO_TO_PIN(1, 17);
+        am335x_mmc[0].gpio_cd = GPIO_TO_PIN(1, 18);
+
+        _configure_device(SMARC_T335X, smarc_t335x_dev_cfg, PROFILE_NONE);
+
+        /* TPS65217 regulator has full constraints */
+        regulator_has_full_constraints();
+
+        am33xx_cpsw_init(AM33XX_CPSW_MODE_RMII, NULL, NULL);
+}
+
 /* EVM - Starter Kit */
 static void setup_starterkit(void)
 {
@@ -2497,8 +2640,8 @@ static void am335x_evm_setup(struct memory_accessor *mem_acc, void *context)
 		goto out;
 	}
 
-	if (strncmp("A335", config.name, 4)) {
-		pr_err("Board %s\ndoesn't look like an AM335x board\n",
+	if (strncmp("SMARC", config.name, 5)) {
+		pr_err("Board %s\ndoesn't look like an SMARCT335x board\n",
 			config.name);
 		goto out;
 	}
@@ -2517,6 +2660,10 @@ static void am335x_evm_setup(struct memory_accessor *mem_acc, void *context)
 			setup_beaglebone();
 	} else if (!strncmp("A335BNLT", config.name, 8)) {
 		setup_beagleboneblack();
+        } else if (!strncmp("SMARCT33", config.name, 8)) {
+                setup_smarc_t335x();
+        } else if (!strncmp("SMARCT1G", config.name, 8)) {
+                setup_smarc_t335x();
 	} else if (!strncmp("A335X_SK", config.name, 8)) {
 		daughter_brd_detected = false;
 		setup_starterkit();
@@ -2536,10 +2683,10 @@ static void am335x_evm_setup(struct memory_accessor *mem_acc, void *context)
 	am335x_opp_update();
 
 	/*
-	 * For now, Beaglebone Black uses PG 2.0 that are speed binned and operate
+	 * For now, SMARC-T335X-1G uses PG 2.1 that are speed binned and operate
 	 * up to 1GHz. So re-enable Turbo and Nitro modes,
 	 */
-	if (!strncmp("A335BNLT", config.name, 8)) {
+	if (!strncmp("SMARCT1G", config.name, 8)) {
 		struct device *mpu_dev;
 
 		mpu_dev = omap_device_get_by_hwmod_name("mpu");
@@ -2659,7 +2806,7 @@ static struct i2c_board_info __initdata am335x_i2c0_boardinfo[] = {
 		I2C_BOARD_INFO("24c256", BASEBOARD_I2C_ADDR),
 		.platform_data  = &am335x_baseboard_eeprom_info,
 	},
-	{
+/*	{
 		I2C_BOARD_INFO("cpld_reg", 0x35),
 	},
 	{
@@ -2668,7 +2815,11 @@ static struct i2c_board_info __initdata am335x_i2c0_boardinfo[] = {
 	{
 		I2C_BOARD_INFO("tps65910", TPS65910_I2C_ID1),
 		.platform_data  = &am335x_tps65910_info,
-	},
+	},*/
+	{
+                /* S35390A RTC */
+                I2C_BOARD_INFO("s35390a", 0x30),
+        },
 	{
 		I2C_BOARD_INFO("tlv320aic3x", 0x1b),
 	},
@@ -2824,6 +2975,17 @@ MACHINE_START(AM335XEVM, "am335xevm")
 	.handle_irq     = omap3_intc_handle_irq,
 	.timer		= &omap3_am33xx_timer,
 	.init_machine	= am335x_evm_init,
+MACHINE_END
+
+MACHINE_START(SMARCT335XEVM, "smarct335xevm")
+        /* Maintainer: Texas Instruments */
+        .atag_offset    = 0x100,
+        .map_io         = am335x_evm_map_io,
+        .init_early     = am33xx_init_early,
+        .init_irq       = ti81xx_init_irq,
+        .handle_irq     = omap3_intc_handle_irq,
+        .timer          = &omap3_am33xx_timer,
+        .init_machine   = am335x_evm_init,
 MACHINE_END
 
 MACHINE_START(AM335XIAEVM, "am335xiaevm")

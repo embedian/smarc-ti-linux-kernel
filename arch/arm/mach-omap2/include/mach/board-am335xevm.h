@@ -17,7 +17,7 @@
 #define _BOARD_AM335X_H
 
 #define BASEBOARD_I2C_ADDR	0x50
-#define DAUG_BOARD_I2C_ADDR	0x51
+#define DAUG_BOARD_I2C_ADDR	0x57
 #define LCD_BOARD_I2C_ADDR	0x52
 
 #define GEN_PURP_EVM		0
@@ -27,6 +27,7 @@
 #define EVM_SK			4
 #define GEN_PURP_DDR3_EVM	5
 #define BEAGLE_BONE_BLACK	6
+#define SMARC_T335X             7
 
 /* REVIST : check posibility of PROFILE_(x) syntax usage */
 #define PROFILE_NONE	-1	/* Few EVM doesn't have profiles */
