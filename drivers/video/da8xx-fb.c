@@ -290,6 +290,20 @@ static struct da8xx_panel known_lcd_panels[] = {
 		.pxl_clk = 9000000,
 		.invert_pxl_clk = 0,
 	},
+        /* PVI S9700RTWV35TR Display*/
+        [4] = {
+                .name = "PVI_PM070WL4",
+                .width = 800,
+                .height = 480,
+                .hfp = 42,
+                .hbp = 86,
+                .hsw = 128,
+                .vfp = 10,
+                .vbp = 33,
+                .vsw = 2,
+                .pxl_clk = 32000000,
+                .invert_pxl_clk = 0,
+        },
 };
 
 static inline bool is_raster_enabled(void)

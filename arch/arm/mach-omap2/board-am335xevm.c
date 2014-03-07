@@ -117,6 +117,8 @@ static struct platform_pwm_backlight_data am335x_backlight_data2 = {
 	.pwm_period_ns  = AM335X_PWM_PERIOD_NANO_SECONDS,
 };
 
+#define SMARC_LCD_VDD_EN  GPIO_TO_PIN(1, 23)
+
 static struct lcd_ctrl_config lcd_cfg = {
 	&disp_panel,
 	.ac_bias		= 255,
@@ -144,6 +146,12 @@ struct da8xx_lcdc_platform_data  NHD_480272MF_ATXI_pdata = {
 	.manu_name              = "NHD",
 	.controller_data        = &lcd_cfg,
 	.type                   = "NHD-4.3-ATXI#-T-1",
+};
+
+struct da8xx_lcdc_platform_data  PVI_PM070WL4_pdata = {
+        .manu_name              = "PVI",
+        .controller_data        = &lcd_cfg,
+        .type                   = "PVI_PM070WL4",
 };
 
 #include "common.h"
@@ -1058,6 +1066,7 @@ static int __init backlight_init(void)
 		switch (am335x_evm_get_id()) {
 		case GEN_PURP_EVM:
 		case GEN_PURP_DDR3_EVM:
+                case SMARC_T335X:
 			ecap_index = 0;
 			break;
 		case EVM_SK:
@@ -1104,6 +1113,8 @@ static void lcdc_init(int evm_id, int profile)
 {
 	struct da8xx_lcdc_platform_data *lcdc_pdata;
 	setup_pin_mux(lcdc_pin_mux);
+        gpio_request(SMARC_LCD_VDD_EN, "LCD_VDD_EN");
+        gpio_direction_output(SMARC_LCD_VDD_EN, 1);
 
 	if (conf_disp_pll(300000000)) {
 		pr_info("Failed configure display PLL, not attempting to"
@@ -1118,6 +1129,9 @@ static void lcdc_init(int evm_id, int profile)
 	case EVM_SK:
 		lcdc_pdata = &NHD_480272MF_ATXI_pdata;
 		break;
+        case SMARC_T335X:
+                lcdc_pdata = &PVI_PM070WL4_pdata;
+                break;
 	default:
 		pr_err("LCDC not supported on this evm (%d)\n",evm_id);
 		return;
@@ -2315,7 +2329,7 @@ static struct evm_dev_cfg smarc_t335x_dev_cfg[] = {
         {rmii2_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {usb0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {usb1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
-/*        {lcdc_init,     DEV_ON_BASEBOARD, PROFILE_NONE},*/
+        {lcdc_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {mcasp1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {mmc1_emmc_init,        DEV_ON_BASEBOARD, PROFILE_NONE},
         {mmc0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
