@@ -1243,14 +1243,66 @@ static void gpio_ddr_vtt_enb_init(int evm_id, int profile)
 }
 
 #define SMARC_BKLT_EN  GPIO_TO_PIN(2, 5)
+#define SMARC_GPIO0  GPIO_TO_PIN(3, 4)
+#define SMARC_GPIO1  GPIO_TO_PIN(0, 7)
+#define SMARC_GPIO2  GPIO_TO_PIN(1, 25)
+#define SMARC_GPIO3  GPIO_TO_PIN(1, 24)
+#define SMARC_GPIO4  GPIO_TO_PIN(2, 4)
+#define SMARC_GPIO5  GPIO_TO_PIN(2, 3)
+#define SMARC_GPIO6  GPIO_TO_PIN(1, 28)
+#define SMARC_GPIO7  GPIO_TO_PIN(1, 29)
+#define SMARC_GPIO8  GPIO_TO_PIN(2, 0)
+#define SMARC_GPIO9  GPIO_TO_PIN(2, 1)
+#define SMARC_GPIO10  GPIO_TO_PIN(3, 7)
+#define SMARC_GPIO11  GPIO_TO_PIN(3, 8)
 /*
  * setup SMARC GPIO
+ * GPIO0-GPIO5 is recommended for use as output and GPIO6-GPIO11 as inputs by
+ * SMARC specification
  */
 static void gpio_init(int evm_id, int profile)
 {
         setup_pin_mux(gpio_pin_mux);
+/* backlight */
         gpio_request(SMARC_BKLT_EN, "BKLT_EN");
         gpio_direction_output(SMARC_BKLT_EN, 1);
+/* GPIO0-GPIO11 */
+/* GPIO0*/
+        gpio_request(SMARC_GPIO0, "GPIO0");
+        gpio_direction_output(SMARC_GPIO0, 0);
+/* GPIO1*/
+        gpio_request(SMARC_GPIO1, "GPIO1");
+        gpio_direction_output(SMARC_GPIO1, 0);
+/* GPIO2*/
+        gpio_request(SMARC_GPIO2, "GPIO2");
+        gpio_direction_output(SMARC_GPIO2, 0);
+/* GPIO3*/
+        gpio_request(SMARC_GPIO3, "GPIO3");
+        gpio_direction_output(SMARC_GPIO3, 0);
+/* GPIO4*/
+        gpio_request(SMARC_GPIO4, "GPIO4");
+        gpio_direction_output(SMARC_GPIO4, 0);
+/* GPIO5*/
+        gpio_request(SMARC_GPIO5, "GPIO5");
+        gpio_direction_output(SMARC_GPIO5, 0);
+/* GPIO6*/
+        gpio_request(SMARC_GPIO6, "GPIO6");
+        gpio_direction_input(SMARC_GPIO6);
+/* GPIO7*/
+        gpio_request(SMARC_GPIO7, "GPIO7");
+        gpio_direction_input(SMARC_GPIO7);
+/* GPIO8*/
+        gpio_request(SMARC_GPIO8, "GPIO8");
+        gpio_direction_input(SMARC_GPIO8);
+/* GPIO9*/
+        gpio_request(SMARC_GPIO9, "GPIO9");
+        gpio_direction_input(SMARC_GPIO9);
+/* GPIO10*/
+        gpio_request(SMARC_GPIO10, "GPIO10");
+        gpio_direction_input(SMARC_GPIO10);
+/* GPIO11*/
+        gpio_request(SMARC_GPIO11, "GPIO11");
+        gpio_direction_input(SMARC_GPIO11);
         return;
 }
 
