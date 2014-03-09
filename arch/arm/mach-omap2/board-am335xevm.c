@@ -43,6 +43,7 @@
 #include <linux/pwm/pwm.h>
 #include <linux/rtc/rtc-omap.h>
 #include <linux/opp.h>
+#include <sound/tlv320aic3x.h>
 
 /* LCD controller is similar to DA850 */
 #include <video/da8xx-fb.h>
@@ -175,7 +176,7 @@ static struct mfd_tscadc_board tscadc = {
 };
 
 static u8 am335x_iis_serializer_direction1[] = {
-	INACTIVE_MODE,	INACTIVE_MODE,	TX_MODE,	RX_MODE,
+        TX_MODE,        RX_MODE,        INACTIVE_MODE,  INACTIVE_MODE,
 	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
 	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
 	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,	INACTIVE_MODE,
@@ -215,6 +216,19 @@ static struct snd_platform_data am335x_evm_sk_snd_data1 = {
 	.txnumevt	= 32,
 	.get_context_loss_count	=
 			omap_pm_get_dev_context_loss_count,
+};
+
+static struct snd_platform_data smarc_t335x_snd_data1 = {
+        .tx_dma_offset  = 0x46400000,   /* McASP1 */
+        .rx_dma_offset  = 0x46400000,
+        .op_mode        = DAVINCI_MCASP_IIS_MODE,
+        .num_serializer = ARRAY_SIZE(am335x_iis_serializer_direction1),
+        .tdm_slots      = 2,
+        .serial_dir     = am335x_iis_serializer_direction1,
+        .asp_chan_q     = EVENTQ_2,
+        .version        = MCASP_VERSION_3,
+        .txnumevt       = 1,
+        .rxnumevt       = 1,
 };
 
 static struct omap2_hsmmc_info am335x_mmc[] __initdata = {
@@ -1402,6 +1416,15 @@ static void evm_nand_init(int evm_id, int profile)
 	omap_init_elm();
 }
 
+static struct regulator_consumer_supply smarc_audio_supplies[] = {
+        /* tlv320aic3x analog supplies */
+        REGULATOR_SUPPLY("AVDD", "1-001b"),
+        REGULATOR_SUPPLY("DRVDD", "1-001b"),
+        /* tlv320aic3x digital supplies */
+        REGULATOR_SUPPLY("IOVDD", "1-001b"),
+        REGULATOR_SUPPLY("DVDD", "1-001b"),
+};
+
 /* TPS65217 voltage regulator support */
 
 /* 1.8V */
@@ -1601,6 +1624,11 @@ static struct regulator_init_data tps65217_regulator_data[] = {
 		.num_consumer_supplies = ARRAY_SIZE(tps65217_ldo4_consumers),
 		.consumer_supplies = tps65217_ldo4_consumers,
 	},
+       /* audio */
+        {
+                .num_consumer_supplies = ARRAY_SIZE(smarc_audio_supplies),
+                .consumer_supplies = smarc_audio_supplies,
+        },
 };
 
 static struct tps65217_board smarct335x_tps65217_info = {
@@ -1709,6 +1737,9 @@ static void mcasp1_init(int evm_id, int profile)
 	case EVM_SK:
 		am335x_register_mcasp(&am335x_evm_sk_snd_data1, 1);
 		break;
+        case SMARC_T335X:
+                am335x_register_mcasp(&smarc_t335x_snd_data1, 1);
+                break;
 	default:
 		am335x_register_mcasp(&am335x_evm_snd_data1, 1);
 	}
@@ -2607,7 +2638,8 @@ static void am335x_setup_daughter_board(struct memory_accessor *m, void *c)
 
 	ret = m->read(m, (char *)&config1, 0, sizeof(config1));
 	if (ret == sizeof(config1)) {
-		pr_info("Detected a daughter card on AM335x EVM..");
+/*		pr_info("Detected a daughter card on AM335x EVM..");*/
+                pr_info("Detected a carrier board for SMARC T335X Module..");
 		daughter_brd_detected = true;
 	}
 	 else {
@@ -2992,7 +3024,7 @@ MACHINE_START(AM335XEVM, "am335xevm")
 MACHINE_END
 
 MACHINE_START(SMARCT335XEVM, "smarct335xevm")
-        /* Maintainer: Texas Instruments */
+        /* Maintainer: Embedian, Inc. */
         .atag_offset    = 0x100,
         .map_io         = am335x_evm_map_io,
         .init_early     = am33xx_init_early,
