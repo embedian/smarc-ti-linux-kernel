@@ -1594,8 +1594,8 @@ static struct regulator_init_data tps65217_regulator_data[] = {
 	/* dcdc2 */
 	{
 		.constraints = {
-			.min_uV = 900000,
-			.max_uV = 3300000,
+			.min_uV = 925000,
+			.max_uV = 1325000,
 			.valid_ops_mask = (REGULATOR_CHANGE_VOLTAGE |
 				REGULATOR_CHANGE_STATUS),
 			.boot_on = 1,
@@ -1610,8 +1610,8 @@ static struct regulator_init_data tps65217_regulator_data[] = {
 	/* dcdc3 */
 	{
 		.constraints = {
-			.min_uV = 900000,
-			.max_uV = 1500000,
+			.min_uV = 925000,
+			.max_uV = 1150000,
 			.valid_ops_mask = (REGULATOR_CHANGE_VOLTAGE |
 				REGULATOR_CHANGE_STATUS),
 			.boot_on = 1,
@@ -1653,7 +1653,7 @@ static struct regulator_init_data tps65217_regulator_data[] = {
 	{
 		.constraints = {
 			.min_uV = 1800000,
-			.max_uV = 3300000,
+			.max_uV = 1800000,
 			.valid_ops_mask = (REGULATOR_CHANGE_VOLTAGE |
 				REGULATOR_CHANGE_STATUS),
 			.boot_on = 1,
@@ -2828,60 +2828,6 @@ static struct at24_platform_data am335x_baseboard_eeprom_info = {
 	.flags          = AT24_FLAG_ADDR16,
 	.setup          = am335x_evm_setup,
 	.context        = (void *)NULL,
-};
-
-static struct regulator_init_data am335x_dummy = {
-	.constraints.always_on	= true,
-};
-
-static struct regulator_consumer_supply am335x_vdd1_supply[] = {
-	REGULATOR_SUPPLY("vdd_mpu", NULL),
-};
-
-static struct regulator_init_data am335x_vdd1 = {
-	.constraints = {
-		.min_uV			= 600000,
-		.max_uV			= 1500000,
-		.valid_modes_mask	= REGULATOR_MODE_NORMAL,
-		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE,
-		.always_on		= 1,
-	},
-	.num_consumer_supplies	= ARRAY_SIZE(am335x_vdd1_supply),
-	.consumer_supplies	= am335x_vdd1_supply,
-	.ignore_check_consumers = 1,
-};
-
-static struct regulator_consumer_supply am335x_vdd2_supply[] = {
-	REGULATOR_SUPPLY("vdd_core", NULL),
-};
-
-static struct regulator_init_data am335x_vdd2 = {
-	.constraints = {
-		.min_uV			= 600000,
-		.max_uV			= 1500000,
-		.valid_modes_mask	= REGULATOR_MODE_NORMAL,
-		.valid_ops_mask		= REGULATOR_CHANGE_VOLTAGE,
-		.always_on		= 1,
-	},
-	.num_consumer_supplies	= ARRAY_SIZE(am335x_vdd2_supply),
-	.consumer_supplies	= am335x_vdd2_supply,
-	.ignore_check_consumers = 1,
-};
-
-static struct tps65910_board am335x_tps65910_info = {
-	.tps65910_pmic_init_data[TPS65910_REG_VRTC]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VIO]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VDD1]	= &am335x_vdd1,
-	.tps65910_pmic_init_data[TPS65910_REG_VDD2]	= &am335x_vdd2,
-	.tps65910_pmic_init_data[TPS65910_REG_VDD3]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VDIG1]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VDIG2]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VPLL]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VDAC]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VAUX1]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VAUX2]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VAUX33]	= &am335x_dummy,
-	.tps65910_pmic_init_data[TPS65910_REG_VMMC]	= &am335x_dummy,
 };
 
 /*
