@@ -765,6 +765,8 @@ static struct pinmux_config gpio_ddr_vtt_enb_pin_mux[] = {
 static struct pinmux_config gpio_pin_mux[] = {
         {"mii1_rxdv.gpio3_4",            OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
                                                        | AM33XX_PULL_DISA},
+	{"gpmc_ben0_cle.gpio2_5",        OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
+                                                       | AM33XX_PULL_DISA},
         {"gpmc_a9.gpio1_25",             OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
                                                        | AM33XX_PULL_DISA},
         {"gpmc_a8.gpio1_24",             OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT
@@ -958,15 +960,13 @@ static void _configure_device(int evm_id, struct evm_dev_cfg *dev_cfg,
 
 /* pinmux for usb0 drvvbus */
 static struct pinmux_config usb0_pin_mux[] = {
-/*	{"usb0_drvvbus.usb0_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},*/
-        {"usb0_drvvbus.gpio0_18",    OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT_PULLUP},
+	{"usb0_drvvbus.usb0_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},
 	{NULL, 0},
 };
 
 /* pinmux for usb1 drvvbus */
 static struct pinmux_config usb1_pin_mux[] = {
-/*	{"usb1_drvvbus.usb1_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},*/
-        {"usb1_drvvbus.gpio3_13",    OMAP_MUX_MODE7 | AM33XX_PIN_OUTPUT_PULLUP},
+	{"usb1_drvvbus.usb1_drvvbus",    OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT},
 	{NULL, 0},
 };
 
@@ -1242,9 +1242,8 @@ static void gpio_ddr_vtt_enb_init(int evm_id, int profile)
 	return;
 }
 
-#define SMARC_BKLT_EN  GPIO_TO_PIN(2, 5)
 #define SMARC_GPIO0  GPIO_TO_PIN(3, 4)
-#define SMARC_GPIO1  GPIO_TO_PIN(0, 7)
+#define SMARC_GPIO1  GPIO_TO_PIN(2, 5)
 #define SMARC_GPIO2  GPIO_TO_PIN(1, 25)
 #define SMARC_GPIO3  GPIO_TO_PIN(1, 24)
 #define SMARC_GPIO4  GPIO_TO_PIN(2, 4)
@@ -1263,9 +1262,6 @@ static void gpio_ddr_vtt_enb_init(int evm_id, int profile)
 static void gpio_init(int evm_id, int profile)
 {
         setup_pin_mux(gpio_pin_mux);
-/* backlight */
-        gpio_request(SMARC_BKLT_EN, "BKLT_EN");
-        gpio_direction_output(SMARC_BKLT_EN, 1);
 /* GPIO0-GPIO11 */
 /* GPIO0*/
         gpio_request(SMARC_GPIO0, "GPIO0");
@@ -2410,6 +2406,7 @@ static struct evm_dev_cfg smarc_t335x_dev_cfg[] = {
         {tps65217_init, DEV_ON_BASEBOARD, PROFILE_NONE},
         {rmii1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {rmii2_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+	{enable_ecap0,  DEV_ON_BASEBOARD, PROFILE_NONE},
         {usb0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {usb1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {lcdc_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
