@@ -1254,6 +1254,10 @@ static void gpio_ddr_vtt_enb_init(int evm_id, int profile)
 #define SMARC_GPIO9  GPIO_TO_PIN(2, 1)
 #define SMARC_GPIO10  GPIO_TO_PIN(3, 7)
 #define SMARC_GPIO11  GPIO_TO_PIN(3, 8)
+/* pin 37 of P1 in SBC-SMART-MEN */
+#define SMARC_GPIO12  GPIO_TO_PIN(0, 15)
+/* pin 38 of P1 in SBC-SMART-MEN */
+#define SMARC_GPIO13  GPIO_TO_PIN(0, 14)
 /*
  * setup SMARC GPIO
  * GPIO0-GPIO5 is recommended for use as output and GPIO6-GPIO11 as inputs by
@@ -1299,6 +1303,11 @@ static void gpio_init(int evm_id, int profile)
 /* GPIO11*/
         gpio_request(SMARC_GPIO11, "GPIO11");
         gpio_direction_input(SMARC_GPIO11);
+/* SBC-SMART-MEN configure i2c1 as GPIOs, default set as Output High*/
+        gpio_request(SMARC_GPIO12, "GPIO12");
+        gpio_direction_output(SMARC_GPIO12, 1);
+        gpio_request(SMARC_GPIO13, "GPIO13");
+        gpio_direction_output(SMARC_GPIO13, 1);
         return;
 }
 
@@ -2417,7 +2426,8 @@ static struct evm_dev_cfg smarc_t335x_dev_cfg[] = {
         {uart2_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {uart0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {d_can_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
-        {i2c1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
+/* SBC-SMART-MEN configure i2c1 as GPIOs */
+/*      {i2c1_init,     DEV_ON_BASEBOARD, PROFILE_NONE}, */
         {i2c2_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {spi0_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
         {spi1_init,     DEV_ON_BASEBOARD, PROFILE_NONE},
