@@ -2745,6 +2745,7 @@ static void cik_gpu_init(struct radeon_device *rdev)
 			   (rdev->pdev->device == 0x130B) ||
 			   (rdev->pdev->device == 0x130E) ||
 			   (rdev->pdev->device == 0x1315) ||
+			   (rdev->pdev->device == 0x1318) ||
 			   (rdev->pdev->device == 0x131B)) {
 			rdev->config.cik.max_cu_per_sh = 4;
 			rdev->config.cik.max_backends_per_se = 1;
@@ -4768,12 +4769,13 @@ static void cik_vm_decode_fault(struct radeon_device *rdev,
 void cik_vm_flush(struct radeon_device *rdev, int ridx, struct radeon_vm *vm)
 {
 	struct radeon_ring *ring = &rdev->ring[ridx];
+	int usepfp = (ridx == RADEON_RING_TYPE_GFX_INDEX);
 
 	if (vm == NULL)
 		return;
 
 	radeon_ring_write(ring, PACKET3(PACKET3_WRITE_DATA, 3));
-	radeon_ring_write(ring, (WRITE_DATA_ENGINE_SEL(0) |
+	radeon_ring_write(ring, (WRITE_DATA_ENGINE_SEL(usepfp) |
 				 WRITE_DATA_DST_SEL(0)));
 	if (vm->id < 8) {
 		radeon_ring_write(ring,
@@ -4832,7 +4834,7 @@ void cik_vm_flush(struct radeon_device *rdev, int ridx, struct radeon_vm *vm)
 	radeon_ring_write(ring, 1 << vm->id);
 
 	/* compute doesn't have PFP */
-	if (ridx == RADEON_RING_TYPE_GFX_INDEX) {
+	if (usepfp) {
 		/* sync PFP to ME, otherwise we might get invalid PFP reads */
 		radeon_ring_write(ring, PACKET3(PACKET3_PFP_SYNC_ME, 0));
 		radeon_ring_write(ring, 0x0);
