@@ -21,6 +21,9 @@
 #define DRA7_DPLL_DSP_DEFFREQ				600000000
 #define DRA7_DPLL_DSP_GFCLK_NOMFREQ			600000000
 #define DRA7_DPLL_EVE_GCLK_NOMFREQ			400000000
+#define DRA7_ATL2_DEFFREQ				5644800
+#define DRA7_DPLL_IVA_DEFFREQ				776666666
+#define DRA7_DPLL_IVA_GFCLK_NOMFREQ			388333333
 
 #define DRA7_ATL_DEFFREQ				5644800
 #define DRA7_DPLL_USB_DEFFREQ				960000000
@@ -323,6 +326,7 @@ int __init dra7xx_dt_clk_init(void)
 	struct clk *ipu1_gfclk, *ipu1_gfclk_parent;
 	struct clk *dsp_dpll, *dsp_m2_dpll, *dsp_m3x2_dpll;
 	struct clk *atl_fck, *atl_parent;
+	struct clk *iva_dpll, *iva_m2_dpll;
 
 	ti_dt_clocks_register(dra7xx_clks);
 
@@ -402,6 +406,19 @@ int __init dra7xx_dt_clk_init(void)
 	rc = clk_set_rate(dpll_ck, DRA7_DPLL_USB_DEFFREQ/2);
 	if (rc)
 		pr_err("%s: failed to set USB_DPLL M2 OUT\n", __func__);
+
+	iva_dpll = clk_get_sys(NULL, "dpll_iva_ck");
+	rc = clk_set_rate(iva_dpll, DRA7_DPLL_IVA_DEFFREQ);
+	if (!rc) {
+		iva_m2_dpll = clk_get_sys(NULL, "dpll_iva_m2_ck");
+		rc = clk_set_rate(iva_m2_dpll, DRA7_DPLL_IVA_GFCLK_NOMFREQ);
+		if (rc)
+			pr_err("%s: failed to configure IVA DPLL m2 output!\n",
+			       __func__);
+
+	} else {
+		pr_err("%s: failed to configure IVA DPLL!\n", __func__);
+	}
 
 	return rc;
 }
