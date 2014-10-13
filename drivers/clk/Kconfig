@@ -99,6 +99,8 @@ config COMMON_CLK_XGENE
 	depends on ARM64
 	---help---
 	  Sypport for the APM X-Gene SoC reference, PLL, and device clocks.
+	  This driver supports TI Palmas devices 32KHz output KG and KG_AUDIO
+	  using common clock framework.
 
 config COMMON_CLK_KEYSTONE
 	tristate "Clock drivers for Keystone based SOCs"
@@ -108,6 +110,13 @@ config COMMON_CLK_KEYSTONE
 	  a power sleep control module that gate the clock to the IPs and PLLs.
 
 source "drivers/clk/qcom/Kconfig"
+
+config IVA_OPP_HIGH
+	bool "IVA DPLL lock for HIGH_OPP"
+	depends on  SOC_DRA7XX
+	default n
+	help
+	Lock IVA DPLL for HIGH OPP (532 MHz)
 
 endmenu
 
