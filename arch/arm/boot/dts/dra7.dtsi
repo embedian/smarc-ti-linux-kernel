@@ -2044,6 +2044,12 @@
 			};
 
 		};
+
+		debugss: debugss {
+                        compatible = "ti,dra7xx-debugss";
+                        clocks = <&sys_clkin1>;
+                        clock-names = "sysclockin1";
+                };
 	};
 };
 
