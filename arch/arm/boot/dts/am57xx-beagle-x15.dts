@@ -63,6 +63,12 @@
 		};
 	};
 
+        ocp {
+            gpu: gpu@0x56000000 {
+                gpu0-voltdm = <&voltdm_gpu>;
+            };
+        };
+
 	vdd_3v3: fixedregulator-vdd_3v3 {
 		compatible = "regulator-fixed";
 		regulator-name = "vdd_3v3";
