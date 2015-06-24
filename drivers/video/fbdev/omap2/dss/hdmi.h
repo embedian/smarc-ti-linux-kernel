@@ -332,6 +332,8 @@ struct omap_hdmi {
 
 	void (*audio_abort_cb)(struct device *dev);
 	int wp_idlemode;
+	bool audio_playing;
+	struct omap_dss_audio audio_config;
 };
 
 #endif

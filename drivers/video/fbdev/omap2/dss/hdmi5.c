@@ -409,6 +409,18 @@ static int hdmi_display_enable(struct omap_dss_device *dssdev)
 
 	hdmi.display_enabled = true;
 
+	if (hdmi.audio_abort_cb && hdmi.audio_playing) {
+		hdmi_wp_audio_core_req_enable(&hdmi.wp, false);
+		r = hdmi5_audio_config(&hdmi.core, &hdmi.wp, &hdmi.audio_config,
+				       hdmi.cfg.timings.pixelclock);
+		if (!r)
+			r = hdmi_wp_audio_core_req_enable(&hdmi.wp, true);
+		if (r) {
+			DSSERR("Error restoring audio stream");
+			hdmi.audio_abort_cb(&hdmi.pdev->dev);
+		}
+	}
+
 	mutex_unlock(&hdmi.lock);
 	return 0;
 
@@ -649,6 +661,7 @@ static int audio_enable(struct device *dev, bool enable)
 			    3, 2);
 
 		hd->audio_abort_cb = NULL;
+		hd->audio_playing = false;
 	}
 
 	mutex_unlock(&hd->lock);
@@ -659,6 +672,8 @@ static int audio_enable(struct device *dev, bool enable)
 static int audio_start(struct device *dev, bool enable)
 {
 	struct omap_hdmi *hd = dev_get_drvdata(dev);
+
+	hd->audio_playing = enable;
 
 	return hdmi_wp_audio_core_req_enable(&hd->wp, enable);
 }
@@ -674,6 +689,8 @@ static int audio_config(struct device *dev, struct omap_dss_audio *dss_audio)
 	else
 		ret = hdmi5_audio_config(&hd->core, &hd->wp, dss_audio,
 					 hd->cfg.timings.pixelclock);
+	if (!ret)
+		hd->audio_config = *dss_audio;
 	mutex_unlock(&hd->lock);
 
 	return ret;
