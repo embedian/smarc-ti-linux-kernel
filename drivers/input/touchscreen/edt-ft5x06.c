@@ -963,6 +963,7 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client,
 	struct input_dev *input;
 	int error;
 	char fw_version[EDT_NAME_LEN];
+	unsigned int max_x, max_y;
 
 	dev_dbg(&client->dev, "probing for EDT FT5x06 I2C\n");
 
@@ -1038,12 +1039,25 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client,
 	__set_bit(EV_KEY, input->evbit);
 	__set_bit(EV_ABS, input->evbit);
 	__set_bit(BTN_TOUCH, input->keybit);
-	input_set_abs_params(input, ABS_X, 0, tsdata->num_x * 64 - 1, 0, 0);
-	input_set_abs_params(input, ABS_Y, 0, tsdata->num_y * 64 - 1, 0, 0);
-	input_set_abs_params(input, ABS_MT_POSITION_X,
-			     0, tsdata->num_x * 64 - 1, 0, 0);
-	input_set_abs_params(input, ABS_MT_POSITION_Y,
-			     0, tsdata->num_y * 64 - 1, 0, 0);
+
+	if ( of_property_read_u32(client->dev.of_node, "touchscreen-size-x", &max_x) == 0 ) {
+		input_set_abs_params(input, ABS_X, 0, max_x - 1, 0, 0);
+		input_set_abs_params(input, ABS_MT_POSITION_X,
+				     0, max_x - 1, 0, 0);
+	} else {
+		input_set_abs_params(input, ABS_X, 0, tsdata->num_x * 64 - 1, 0, 0);
+		input_set_abs_params(input, ABS_MT_POSITION_X,
+				     0, tsdata->num_x * 64 - 1, 0, 0);
+	}
+	if ( of_property_read_u32(client->dev.of_node, "touchscreen-size-y", &max_y) == 0 ) {
+		input_set_abs_params(input, ABS_Y, 0, max_y - 1, 0, 0);
+		input_set_abs_params(input, ABS_MT_POSITION_Y,
+				     0, max_y - 1, 0, 0);
+	} else {
+		input_set_abs_params(input, ABS_Y, 0, tsdata->num_y * 64 - 1, 0, 0);
+		input_set_abs_params(input, ABS_MT_POSITION_Y,
+				     0, tsdata->num_y * 64 - 1, 0, 0);
+	}
 	error = input_mt_init_slots(input, MAX_SUPPORT_POINTS, 0);
 	if (error) {
 		dev_err(&client->dev, "Unable to init MT slots.\n");
