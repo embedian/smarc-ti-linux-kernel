@@ -217,7 +217,9 @@ static void am43xx_restore_context(void)
 
 int am33xx_rtc_only_idle(long unsigned int unused)
 {
+#ifdef ONFIG_RTC_DRV_OMAP
 	omap_rtc_power_off_program();
+#endif
 	am33xx_do_wfi_sram(&susp_params);
 	return 0;
 }
@@ -725,7 +727,9 @@ int __init am33xx_pm_init(void)
 	susp_params.wfi_flags = 0;
 	susp_params.emif_addr_virt = am33xx_emif_base;
 	susp_params.dram_sync = am33xx_dram_sync;
+#ifdef ONFIG_RTC_DRV_OMAP
 	susp_params.rtc_base = omap_rtc_get_base_addr();
+#endif
 
 	switch (temp) {
 	case MEM_TYPE_DDR2:
