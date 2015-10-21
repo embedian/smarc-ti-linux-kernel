@@ -109,7 +109,7 @@
 
         backlight {
                 compatible = "pwm-backlight";
-                gpios = <&gpio1 22 1>; /* Backlight Enable Pin*/
+                enable-gpios = <&gpio1 22 0>; /* Backlight Enable Pin*/
                 pwms = <&ecap0 0 50000 0>;
                 brightness-levels = <0 51 53 56 62 75 101 152 255>;
                 default-brightness-level = <8>;
@@ -687,7 +687,7 @@
         pinctrl-names = "default", "sleep";
         pinctrl-0 = <&cpsw_default>;
         pinctrl-1 = <&cpsw_sleep>;
-        dual_emac;
+        dual_emac = <1>;
 };
 
 &davinci_mdio {
@@ -706,11 +706,6 @@
 	phy_id = <&davinci_mdio>, <1>;
 	phy-mode = "rmii";
         dual_emac_res_vlan = <2>;
-};
-
-&phy_sel {
-        reg= <0x44e10650 0xf5>;
-	rmii-clock-ext;
 };
 
 &usb {
@@ -788,4 +783,8 @@
 
 &wkup_m3 {
         ti,scale-data-fw = "am335x-evm-scale-data.bin";
+};
+
+&rtc {
+        ti,system-power-controller;
 };

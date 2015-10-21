@@ -229,6 +229,7 @@ dtb-$(CONFIG_ARCH_OMAP2PLUS) += omap2420-h4.dtb \
 	am335x-evmsk.dtb \
 	am335x-bone.dtb \
 	am335x-boneblack.dtb \
+        am335x-smarct335x.dtb \
 	am335x-nano.dtb \
 	am335x-base0033.dtb \
 	am335x-smarct335x.dtb \
