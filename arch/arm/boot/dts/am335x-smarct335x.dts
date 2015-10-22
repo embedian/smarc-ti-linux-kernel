@@ -30,6 +30,6 @@
 };
 
 &sgx {
-        status = "disabled";
+        status = "okay";
 };
 
