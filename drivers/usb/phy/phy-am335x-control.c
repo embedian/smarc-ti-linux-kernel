@@ -3,6 +3,7 @@
 #include <linux/err.h>
 #include <linux/of.h>
 #include <linux/io.h>
+#include <linux/delay.h>
 
 struct phy_control {
 	void (*phy_power)(struct phy_control *phy_ctrl, u32 id, bool on);
@@ -90,6 +91,14 @@ static void am335x_phy_power(struct phy_control *phy_ctrl, u32 id, bool on)
 	}
 
 	writel(val, usb_ctrl->phy_reg + reg);
+
+	/*
+	 * Give the PHY ~1ms to complete the power up operation.
+	 * Tests have shown unstable behaviour if other USB PHY related
+	 * registers are written too shortly after such a transition.
+	 */
+	if (on)
+		mdelay(1);
 }
 
 static const struct phy_control ctrl_am335x = {
