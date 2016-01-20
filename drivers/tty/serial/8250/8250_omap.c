@@ -1149,6 +1149,7 @@ static int omap8250_probe(struct platform_device *pdev)
 	up.port.shutdown = omap_8250_shutdown;
 	up.port.throttle = omap_8250_throttle;
 	up.port.unthrottle = omap_8250_unthrottle;
+	up.port.uartclk = DEFAULT_CLK_SPEED;
 
 	if (pdev->dev.of_node) {
 		const struct of_device_id *id;

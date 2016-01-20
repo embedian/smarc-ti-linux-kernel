@@ -47,7 +47,7 @@ static struct omap_opp_def am43xx_es1_0_opp_list[] __initdata = {
 	/* MPU OPP3 - OPPTurbo */
 	OPP_INITIALIZER("mpu", false, 800000000, 1260000),
 	/* MPU OPP4 - OPPNitro */
-	OPP_INITIALIZER("mpu", false, 1000000000, 1325000),
+	OPP_INITIALIZER("mpu", false, 1000000000, 1330000),
 };
 
 /**
