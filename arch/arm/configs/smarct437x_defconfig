@@ -397,6 +397,7 @@ CONFIG_SOC_HAS_OMAP2_SDRC=y
 #
 # OMAP Legacy Platform Data Board Type
 #
+CONFIG_AMX3_PM=y
 # CONFIG_ARCH_PICOXCELL is not set
 # CONFIG_ARCH_QCOM is not set
 # CONFIG_ARCH_ROCKCHIP is not set
@@ -3476,7 +3477,7 @@ CONFIG_RTC_DRV_S35390A=y
 #
 # on-CPU RTC drivers
 #
-# CONFIG_RTC_DRV_OMAP is not set
+CONFIG_RTC_DRV_OMAP=y
 # CONFIG_RTC_DRV_SNVS is not set
 # CONFIG_RTC_DRV_XGENE is not set
 
