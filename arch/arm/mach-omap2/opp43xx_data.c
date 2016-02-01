@@ -35,7 +35,7 @@
 #define EFUSE_OPP_100_600MHZ_BIT		(0x1 << 2)
 #define EFUSE_OPP_120_720MHZ_BIT		(0x1 << 3)
 #define EFUSE_OPP_TURBO_800MHZ_BIT		(0x1 << 4)
-#define EFUSE_OPP_NITRO_1GHZ_BIT		(0x1 << 5)
+#define EFUSE_OPP_NITRO_1GHZ_BIT		(0x0 << 5)
 
 static struct omap_opp_def am43xx_es1_0_opp_list[] __initdata = {
 	/* MPU OPP1 - OPP50 */
