@@ -805,5 +805,5 @@
 };
 
 &rtc {
-        system-power-controller;
+        ext-clk-src;
 };
