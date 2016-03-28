@@ -624,7 +624,7 @@
                 status = "okay";
 
                 AVDD-supply = <&dcdc4>;
-                IOVDD-supply = <&dcdc4>;
+                IOVDD-supply = <&dcdc6>;
                 DRVDD-supply = <&dcdc4>;
                 DVDD-supply = <&ldo1>;
         };*/
@@ -636,7 +636,7 @@
                 reg = <0x0a>;
                 clocks = <&audio_mstrclk>;
                 VDDA-supply = <&dcdc4>;
-                VDDIO-supply = <&dcdc4>;
+                VDDIO-supply = <&dcdc6>;
                 VDDD-supply = <&ldo1>;
         };
 };
