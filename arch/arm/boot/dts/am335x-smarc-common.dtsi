@@ -775,7 +775,18 @@
                                   2 13>;
 };
 
+&mmc2 {
+        vmmc-supply = <&vmmcsd_fixed>;
+        pinctrl-names = "default";
+        pinctrl-0 = <&emmc_pins>;
+        bus-width = <8>;
+        status = "okay";
+        ti,non-removable;
+};
+
+
 &mmc1 {
+	vmmc-supply = <&vmmcsd_fixed>;
 	status = "okay";
 	bus-width = <0x4>;
 	pinctrl-names = "default";
