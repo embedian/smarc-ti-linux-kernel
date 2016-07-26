@@ -548,7 +548,7 @@ static int cppi41_dma_channel_abort(struct dma_channel *channel)
 		csr &= ~MUSB_TXCSR_DMAENAB;
 		musb_writew(epio, MUSB_TXCSR, csr);
 	} else {
-		cppi41_set_autoreq_mode(cppi41_channel, EP_MODE_AUTOREQ_NONE);
+		cppi41_set_autoreq_mode(cppi41_channel, EP_MODE_AUTOREG_NONE);
 
 		csr = musb_readw(epio, MUSB_RXCSR);
 		csr &= ~(MUSB_RXCSR_H_REQPKT | MUSB_RXCSR_DMAENAB);
