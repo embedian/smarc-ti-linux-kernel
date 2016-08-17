@@ -804,7 +804,8 @@
 	};
 };
 
-&spi1 {
+/* SPI0, spidev2 */
+&spi2 {
     	ti,spi-num-cs = <2>;
  	status = "okay";
         pinctrl-names = "default";
@@ -832,7 +833,8 @@
                 };
         };
 
-&spi3 {
+/* SPI1, spidev3 */
+&spi4 {
     	ti,spi-num-cs = <2>;
         status = "okay";
         pinctrl-names = "default";
