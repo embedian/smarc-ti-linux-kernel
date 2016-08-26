@@ -89,6 +89,11 @@
 	model = "TI AM335x SMARCT335X";
 	compatible = "ti,am335x-smarct335x", "ti,am33xx";
 
+        aliases {
+                rtc0 = &s35390a;
+                rtc1 = &rtc;
+        };
+
 	cpus {
 		cpu@0 {
 			cpu0-supply = <&dcdc2_reg>;
@@ -650,7 +655,7 @@
                         /* VDD_MPU voltage limits 0.95V - 1.325V with +/-4% tolerance */
                         regulator-name = "vdd_mpu";
                         regulator-min-microvolt = <925000>;
-                        regulator-max-microvolt = <1378000>;
+                        regulator-max-microvolt = <1351500>;
                         regulator-boot-on;
                         regulator-always-on;
                 };
@@ -808,6 +813,5 @@
 };
 
 &rtc {
-      	status = "disabled";
-        ext-clk-src;
+       	ext-clk-src;
 };
