@@ -1126,33 +1126,33 @@ static int fb_check_var(struct fb_var_screeninfo *var,
 		var->nonstd = FB_NONSTD_REV_PIX_IN_B;
 		break;
 	case 16:		/* RGB 565 */
-		var->red.offset = 11;
+		var->blue.offset = 11;
 		var->red.length = 5;
 		var->green.offset = 5;
 		var->green.length = 6;
-		var->blue.offset = 0;
+		var->red.offset = 0;
 		var->blue.length = 5;
 		var->transp.offset = 0;
 		var->transp.length = 0;
 		var->nonstd = 0;
 		break;
 	case 24:
-		var->red.offset = 16;
+		var->blue.offset = 16;
 		var->red.length = 8;
 		var->green.offset = 8;
 		var->green.length = 8;
-		var->blue.offset = 0;
+		var->red.offset = 0;
 		var->blue.length = 8;
 		var->nonstd = 0;
 		break;
 	case 32:
 		var->transp.offset = 24;
 		var->transp.length = 8;
-		var->red.offset = 16;
+		var->blue.offset = 16;
 		var->red.length = 8;
 		var->green.offset = 8;
 		var->green.length = 8;
-		var->blue.offset = 0;
+		var->red.offset = 0;
 		var->blue.length = 8;
 		var->nonstd = 0;
 		break;
