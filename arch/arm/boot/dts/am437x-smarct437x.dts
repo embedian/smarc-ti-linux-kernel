@@ -43,8 +43,8 @@
                 compatible = "pwm-backlight";
                 enable-gpios = <&gpio2 4 GPIO_ACTIVE_HIGH>; /* Backlight Enable Pin*/
                 pwms = <&ehrpwm0 1 250000 PWM_POLARITY_INVERTED>;
-                brightness-levels = <0 51 53 56 62 75 128 212 255>;
-                default-brightness-level = <7>; /* 7 is the brightest */
+		brightness-levels = <255 212 128 56 75 62 53 51 0>;
+                default-brightness-level = <8>; /* 8 is the brightest */
         };
 
         sound: sound@0 {
@@ -433,8 +433,8 @@
         /* SPI0 Pins */
         spi2_pins: spi2_pins {
                 pinctrl-single,pins = <
-                        0x1d4 (PIN_OUTPUT | MUX_MODE4)  /* cam1_hd.spi2_cs0 */
-                        0x1e0 (PIN_OUTPUT | MUX_MODE4)  /* cam1_field.spi2_cs0 */
+                        0x1d4 (PIN_OUTPUT | MUX_MODE7)  /* cam1_hd.gpio4_9 */
+                        0x1e0 (PIN_OUTPUT | MUX_MODE7)  /* cam1_field.gpio4_12 */
                         0x1dc (PIN_INPUT | MUX_MODE4)   /* cam1_pclk.spi2_sclk */
                         0x1d0 (PIN_INPUT | MUX_MODE4)   /* cam1_data8.spi2_d0 */
                         0x1e4 (PIN_OUTPUT | MUX_MODE4)  /* cam1_wen.spi2_d1 */
@@ -444,8 +444,8 @@
         /* SPI1 Pins */
         spi4_pins: spi4_pins {
                 pinctrl-single,pins = <
-                        0x25c (PIN_OUTPUT | MUX_MODE0)  /* spi4_cs0.spi4_cs0 */
-                        0x230 (PIN_OUTPUT | MUX_MODE2)  /* uart3_cstn.spi4_cs1 */
+                        0x25c (PIN_OUTPUT | MUX_MODE7)  /* spi4_cs0.gpio5_7 */
+                        0x230 (PIN_OUTPUT | MUX_MODE7)  /* uart3_cstn.gpio5_0 */
                         0x250 (PIN_INPUT | MUX_MODE0)   /* spi4_sclk.spi4_sclk */
                         0x254 (PIN_INPUT | MUX_MODE0)   /* spi4_d0.spi4_d0 */
                         0x258 (PIN_OUTPUT | MUX_MODE0)  /* spi4_d1.spi4_d1 */
@@ -825,6 +825,7 @@
         status = "okay";
         pinctrl-names = "default";
         pinctrl-0 = <&spi2_pins>;
+        cs-gpios = <&gpio4 9 GPIO_ACTIVE_HIGH>,<&gpio4 12 GPIO_ACTIVE_HIGH>;
         dmas = <&edma 18 0
                 &edma 19 0
                 &edma 20 0
@@ -836,7 +837,7 @@
                         #size-cells = <0>;
                         compatible = "spidev";
                         reg = <0>;
-                        spi-max-frequency = <24000000>;
+                        spi-max-frequency = <5000000>;
                 };
 
                 spidev2: spidev@1 {
@@ -844,7 +845,7 @@
                         #size-cells = <0>;
                         compatible = "spidev";
                         reg = <1>;
-                        spi-max-frequency = <24000000>;
+                        spi-max-frequency = <5000000>;
                 };
         };
 
@@ -854,6 +855,7 @@
         status = "okay";
         pinctrl-names = "default";
         pinctrl-0 = <&spi4_pins>;
+        cs-gpios = <&gpio5 7 GPIO_ACTIVE_HIGH>,<&gpio5 0 GPIO_ACTIVE_HIGH>;
         dmas = <&edma 26 0
                 &edma 27 0
                 &edma 28 0
@@ -865,7 +867,7 @@
                         #size-cells = <0>;
                         compatible = "spidev";
                         reg = <0>;
-                        spi-max-frequency = <24000000>;
+                        spi-max-frequency = <5000000>;
                 };
 
                 spidev4: spidev@1 {
@@ -873,7 +875,7 @@
                         #size-cells = <0>;
                         compatible = "spidev";
                         reg = <1>;
-                        spi-max-frequency = <24000000>;
+                        spi-max-frequency = <5000000>;
                 };
         };
 
