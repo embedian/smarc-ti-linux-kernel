@@ -1,0 +1,34 @@
+/*
+ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ */
+/dts-v1/;
+
+#include "am33xx.dtsi"
+#include <dt-bindings/interrupt-controller/irq.h>
+#include "am335x-smarc-common.dtsi"
+
+&ldo3_reg {
+	regulator-min-microvolt = <1800000>;
+	regulator-max-microvolt = <1800000>;
+	regulator-always-on;
+};
+
+&sgx {
+        status = "okay";
+};
+
+&cpu0_opp_table {
+        /*
+         * All PG 2.0 silicon may not support 1GHz but some of the early
+         * BeagleBone Blacks have PG 2.0 silicon which is guaranteed
+         * to support 1GHz OPP so enable it for PG 2.0 on this board.
+         */
+        oppnitro@1000000000 {
+                opp-supported-hw = <0x06 0x0100>;
+        };
+};
+
