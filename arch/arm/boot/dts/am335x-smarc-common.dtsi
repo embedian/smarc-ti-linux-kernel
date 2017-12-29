@@ -92,6 +92,8 @@
         aliases {
                 rtc0 = &s35390a;
                 rtc1 = &rtc;
+               	mmc0 = &mmc2;   /* Fixed to mmcblk0 for &mmc2 */
+               	mmc1 = &mmc1;   /* Fixed to mmcblk1 for &mmc1 */
         };
 
 	cpus {
@@ -125,7 +127,7 @@
                 status = "okay";
         	pinctrl-names = "default";
         	pinctrl-0 = <&lcd_pins_default>;
-		enable-gpios = <&gpio1 23 0>;
+		enable-gpios = <&gpio1 23 0>; /* Enable LCD_VDD_EN pin */
                 panel-info {
                         ac-bias           = <255>;
                         ac-bias-intrpt    = <0>;
