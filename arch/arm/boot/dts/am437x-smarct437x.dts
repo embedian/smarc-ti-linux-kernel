@@ -95,18 +95,18 @@
                 pinctrl-names = "default";
                 pinctrl-0 = <&lcd_pins>;
 
-                enable-gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>;	/* Enable LCD_VDD_EN pin */
+                enable-gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>, <&gpio0 20 GPIO_ACTIVE_HIGH>;	/* Enable LCD_VDD_EN pin, LVDS Enable Pin */
 
                 panel-timing {
-                                clock-frequency = <33200000>;
-                                hactive = <800>;
-                                vactive = <480>;
-                                hfront-porch = <42>;
-                                hback-porch = <84>;
-                                hsync-len = <128>;
-                                vback-porch = <33>;
+                                clock-frequency = <52012800>;
+                                hactive = <1024>;
+                                vactive = <600>;
+                                hfront-porch = <80>;
+                                hback-porch = <80>;
+                                hsync-len = <160>;
+                                vback-porch = <10>;
                                 vfront-porch = <10>;
-                                vsync-len = <2>;
+                                vsync-len = <15>;
                                 hsync-active = <0>;
                                 vsync-active = <0>;
                                 de-active = <1>;
@@ -117,6 +117,76 @@
                         lcd_in: endpoint {
                                 remote-endpoint = <&dpi_out>;
                         };
+                };
+        };
+
+        /*
+         * Workaround to config SP339EER 
+         * Possibly because this GPIO pin isn't bound to a driver the pin gets reset during kernel boot by the GPIO bank reset.
+         * We work around this issue by using the GPIO pin as a LED with its default state on
+         */
+        workaround {
+                compatible = "gpio-leds";
+
+	/* Mode 01: RS232, Mode 10: RS485 Half Duplex, Mode 11: RS485/232 Full Duplex. */
+                com0_mode0 {
+                        label = "com0_mode0";
+                        gpios = <&pcf8574a 0 GPIO_ACTIVE_HIGH>;
+                        default-state = "off";
+                };
+
+                com0_mode1 {
+                        label = "com0_mode1";
+                        gpios = <&pcf8574a 1 GPIO_ACTIVE_HIGH>;
+                        default-state = "on";
+                };
+
+                com0_enable {
+                        label = "com0_enable";
+                        gpios = <&pcf8574a 5 GPIO_ACTIVE_HIGH>;
+                        default-state = "on";
+                };
+
+                com0_slew {
+                        label = "com0_slew";
+                        gpios = <&pcf8574a 2 GPIO_ACTIVE_HIGH>;
+                        default-state = "on";
+                };
+
+                com0_term {
+                        label = "com0_term";
+                        gpios = <&pcf8574a 4 GPIO_ACTIVE_HIGH>;
+                        default-state = "off"; /* RS422/485 Receiver Termination, set on when mode1/mode2 is 10 or 11 */
+                };
+
+                com1_mode0 {
+                        label = "com1_mode0";
+                        gpios = <&pcf8574b 0 GPIO_ACTIVE_HIGH>;
+                        default-state = "off";
+                };
+
+                com1_mode1 {
+                        label = "com1_mode1";
+                        gpios = <&pcf8574b 1 GPIO_ACTIVE_HIGH>;
+                        default-state = "on";
+                };
+
+                com1_enable {
+                        label = "com1_enable";
+                        gpios = <&pcf8574b 5 GPIO_ACTIVE_HIGH>;
+                        default-state = "on";
+                };
+
+                com1_slew {
+                        label = "com1_slew";
+                        gpios = <&pcf8574b 2 GPIO_ACTIVE_HIGH>;
+                        default-state = "on";
+                };
+
+                com1_term {
+                        label = "com1_term";
+                        gpios = <&pcf8574b 4 GPIO_ACTIVE_HIGH>;
+                        default-state = "off"; /* RS422/485 Receiver Termination, set on when mode1/mode2 is 10 or 11 */
                 };
         };
 };
@@ -288,17 +358,12 @@
         gpio_pins_default: pinmux_gpio_pin {
                 pinctrl-single,pins = <
                        	AM4372_IOPAD(0xa6c, PIN_INPUT_PULLDOWN | MUX_MODE9)  	/* spi2_cs0.gpio0_23 */
-                       	AM4372_IOPAD(0xa64, PIN_INPUT_PULLDOWN | MUX_MODE9)  	/* spi2_d0.gpio0_20 */
+                       	AM4372_IOPAD(0xa64, PIN_OUTPUT_PULLDOWN | MUX_MODE9)  	/* spi2_d0.gpio0_20, LVDS_EN */
                        	AM4372_IOPAD(0xa68, PIN_INPUT_PULLDOWN | MUX_MODE9)  	/* spi2_d1.gpio0_21 */
                        	AM4372_IOPAD(0xa60, PIN_INPUT_PULLDOWN | MUX_MODE9)  	/* spi2_sclk.gpio0_22 */
-                        AM4372_IOPAD(0xa1c, PIN_INPUT_PULLDOWN | MUX_MODE7)  	/* cam0_data5.gpio4_27 */
-                        AM4372_IOPAD(0xa24, PIN_INPUT_PULLDOWN | MUX_MODE7)  	/* cam0_data7.gpio4_29 */
-                        AM4372_IOPAD(0x99c, PIN_OUTPUT_PULLDOWN | MUX_MODE7) 	/* mcasp0_ahclkr.gpio3_17 */
-                        AM4372_IOPAD(0x998, PIN_OUTPUT_PULLDOWN | MUX_MODE7) 	/* mcasp0_axr0.gpio3_16 */
-                        AM4372_IOPAD(0xa10, PIN_OUTPUT_PULLDOWN | MUX_MODE7) 	/* cam0_data2.gpio4_24 */
-                        AM4372_IOPAD(0xa14, PIN_OUTPUT_PULLDOWN | MUX_MODE7) 	/* cam0_data3.gpio4_25 */
-                        AM4372_IOPAD(0xa18, PIN_OUTPUT_PULLDOWN | MUX_MODE7) 	/* cam0_data4.gpio4_26 */
-                        AM4372_IOPAD(0xa20, PIN_OUTPUT_PULLDOWN | MUX_MODE7) 	/* cam0_data6.gpio4_28 */
+                        AM4372_IOPAD(0xa1c, PIN_OUTPUT_PULLDOWN | MUX_MODE7)  	/* cam0_data5.gpio4_27, SIS9200 Touch Reset */
+                        AM4372_IOPAD(0xa24, PIN_OUTPUT_PULLDOWN | MUX_MODE7)  	/* cam0_data7.gpio4_29, Buzzer */
+                        AM4372_IOPAD(0x99c, PIN_INPUT_PULLDOWN | MUX_MODE7) 	/* mcasp0_ahclkr.gpio3_17, SIS9200 Toucg Irq */
                 >;
         };
 
@@ -512,6 +577,36 @@
         pinctrl-names = "default";
         pinctrl-0 = <&i2c0_pins>;
         clock-frequency = <100000>;
+
+        	pcf8574a: gpio@20 {
+               		compatible = "nxp,pcf8574";
+                       	reg = <0x20>;
+                       	lines-initial-states = <0x3f>;
+                       	gpio-controller;
+                      	#gpio-cells = <2>;
+                      	interrupt-controller;
+                      	#interrupt-cells = <2>;
+       		};
+
+                pcf8574b: gpio@21 {
+                        compatible = "nxp,pcf8574";
+                        reg = <0x21>;
+                        lines-initial-states = <0x3f>;
+                        gpio-controller;
+                        #gpio-cells = <2>;
+                        interrupt-controller;
+                        #interrupt-cells = <2>;
+                };
+
+                pcf8574c: gpio@22 {
+                        compatible = "nxp,pcf8574";
+                        reg = <0x22>;
+                        lines-initial-states = <0xf>;
+                        gpio-controller;
+                        #gpio-cells = <2>;
+                        interrupt-controller;
+                        #interrupt-cells = <2>;
+                };
 };
 
 &i2c1 {
@@ -657,11 +752,16 @@
         pinctrl-0 = <&i2c2_pins>;
         clock-frequency = <100000>;
 
-        /* CH7055A Parallel LCD to VGA D-SUB 15 way */
-        eeprom@76 {
-                compatible = "at,24c256";
-                reg = <0x76>;
-        };
+        /* SIS9200 I2C Touchscreen */
+	sis9255@5c  {
+		compatible = "sis,9200-ts";
+		reg = <0x5c>;
+		pinctrl-names = "default";
+		interrupt-parent = <&gpio3>;
+		interrupts = <17 IRQ_TYPE_EDGE_FALLING>;
+		irq-gpios = <&gpio3 17 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio4 27 GPIO_ACTIVE_LOW>;
+	};
 };
 
 
@@ -877,6 +977,7 @@
         status = "okay";
 };
 
+/* RS232 */
 &uart3 {
         pinctrl-names = "default";
         pinctrl-0 = <&uart3_pins>;
@@ -885,6 +986,21 @@
         status = "okay";
 };
 
+/* RS485 */
+/*&uart3 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart3_pins>;
+        pinctrl-1 = <&uart3_pins_sleep>;
+	rts-gpio = <&pcf8574a 3 GPIO_ACTIVE_HIGH>;
+        rs485-rts-active-low;
+        rs485-rts-delay = <2 2>;
+        rs485-rx-during-tx; 
+        linux,rs485-enabled-at-boot-time;
+
+        status = "okay";
+};*/
+
+/* RS232 */
 &uart2 {
         pinctrl-names = "default";
         pinctrl-0 = <&uart2_pins>;
@@ -892,6 +1008,20 @@
 
         status = "okay";
 };
+
+/* RS485 */
+/*&uart2 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&uart2_pins>;
+        pinctrl-1 = <&uart2_pins_sleep>;
+        rts-gpio = <&pcf8574b 3 GPIO_ACTIVE_HIGH>;
+        rs485-rts-active-low;
+        rs485-rts-delay = <2 2>;
+        rs485-rx-during-tx;
+        linux,rs485-enabled-at-boot-time;
+
+        status = "okay";
+};*/
 
 &uart4 {
         pinctrl-names = "default";
