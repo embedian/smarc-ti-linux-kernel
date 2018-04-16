@@ -558,9 +558,10 @@
 
         /* If you want to get 24 bit RGB and 16 BGR mode instead of
          * current 16 bit RGB and 24 BGR modes, set the propety
-         * below to "crossed".
+         * below to "straight".
          */  
-      	blue-and-red-wiring = "straight";
+      	/*blue-and-red-wiring = "straight";*/
+	blue-and-red-wiring = "crossed";
 };
 
 &elm {
